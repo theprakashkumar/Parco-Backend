@@ -18,7 +18,7 @@ const UserSchema = new Schema({
     post: [
         {
             post: {
-                type: Schema.Type.ObjectId,
+                type: Schema.Types.ObjectId,
                 ref: "Post",
             },
         },
@@ -38,7 +38,7 @@ const UserSchema = new Schema({
     followers: [
         {
             followers: {
-                type: Schema.Type.ObjectId,
+                type: Schema.Types.ObjectId,
                 ref: "User",
             },
         },
@@ -46,7 +46,7 @@ const UserSchema = new Schema({
     following: [
         {
             following: {
-                type: Schema.Type.ObjectId,
+                type: Schema.Types.ObjectId,
                 ref: "User",
             },
         },
