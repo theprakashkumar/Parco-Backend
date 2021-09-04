@@ -59,7 +59,6 @@ const getUserLoggedIn = async (req, res) => {
                 foundUser.password
             );
             if (passwordMatched) {
-                console.log("password matched");
                 const token = jwt.sign(
                     { userId: foundUser._id },
                     process.env.SECRET,
@@ -73,13 +72,11 @@ const getUserLoggedIn = async (req, res) => {
                     token: token,
                 });
             }
-            console.log("wrong password");
             return res.status(200).json({
                 success: false,
                 message: "Wrong Password!",
             });
         }
-        console.log("user not found");
         res.status(401).json({
             success: false,
             message: "User Not Found!",
@@ -93,4 +90,29 @@ const getUserLoggedIn = async (req, res) => {
     }
 };
 
-module.exports = { getUserSignup, getUserLoggedIn };
+const getUserProfile = async (req, res) => {
+    try {
+        const body = req.body;
+
+        const foundUser = await User.find({ _id: body.userId });
+        if (foundUser) {
+            return res.status(200).json({
+                success: true,
+                foundUser,
+            });
+        }
+        return res.status(404).json({
+            success: false,
+            message: "User Not Found!",
+            error: err.message,
+        });
+    } catch (err) {
+        return res.status(400).json({
+            status: false,
+            message: "Can't Get the User!",
+            error: err.message,
+        });
+    }
+};
+
+module.exports = { getUserSignup, getUserLoggedIn, getUserProfile };
