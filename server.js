@@ -3,6 +3,7 @@ const env = require("dotenv");
 
 const connect = require("./db/connect");
 const userRouter = require("./routes/user.routes");
+const postRouter = require("./routes/post.routes");
 
 // configure
 const app = express();
@@ -16,7 +17,8 @@ app.get("/", (req, res) => {
 
 // Routes
 app.use("/user", userRouter);
+app.use("/post", postRouter);
 
-app.listen(process.env.PORT || 5000, () => {
+app.listen(process.env.PORT || 5050, () => {
     console.log("Server Has Started ");
 });

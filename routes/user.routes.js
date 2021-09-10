@@ -14,4 +14,6 @@ router.post("/login", getUserLoggedIn);
 router.use(authenticate);
 router.get("/:id", getUserProfile);
 
+//route to update user details
+
 module.exports = router;

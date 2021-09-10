@@ -10,7 +10,7 @@ const authenticate = (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.SECRET);
-    // if password is valid
+    // if password is valid put the userId in req
     if (decoded) {
         req.userId = decoded.userId;
         next();

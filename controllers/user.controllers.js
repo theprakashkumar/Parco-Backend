@@ -12,7 +12,7 @@ const getUserSignup = async (req, res) => {
         if (userAlreadyExists) {
             return res.status(409).json({
                 success: false,
-                error: "User Already Exists With the Email!",
+                message: "User Already Exists With the Email!",
             });
         }
 
@@ -22,7 +22,7 @@ const getUserSignup = async (req, res) => {
         if (usernameAlreadyExists) {
             return res.status(409).json({
                 success: false,
-                error: "Username Already Exists",
+                message: "Username Already Exists",
             });
         }
         const newUser = new User(body);
@@ -42,7 +42,7 @@ const getUserSignup = async (req, res) => {
         res.status(400).json({
             success: false,
             message: `Can't Create User!`,
-            error: err.message,
+            errorMessage: err.message,
         });
     }
 };
@@ -77,7 +77,7 @@ const getUserLoggedIn = async (req, res) => {
                 message: "Wrong Password!",
             });
         }
-        res.status(401).json({
+        return res.status(401).json({
             success: false,
             message: "User Not Found!",
         });
@@ -85,7 +85,7 @@ const getUserLoggedIn = async (req, res) => {
         res.status(400).json({
             success: false,
             message: "Can't Login the User!",
-            error: err.message,
+            errorMessage: err.message,
         });
     }
 };
@@ -104,13 +104,13 @@ const getUserProfile = async (req, res) => {
         return res.status(404).json({
             success: false,
             message: "User Not Found!",
-            error: err.message,
+            errorMessage: err.message,
         });
     } catch (err) {
         return res.status(400).json({
             status: false,
             message: "Can't Get the User!",
-            error: err.message,
+            errorMessage: err.message,
         });
     }
 };
