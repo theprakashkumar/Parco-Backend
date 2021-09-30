@@ -4,28 +4,29 @@ var jwt = require("jsonwebtoken");
 
 const getUserSignup = async (req, res) => {
     try {
-        const body = req.body;
-        console.log(body);
-        const userAlreadyExists = await User.findOne({
-            email: body.email,
-        });
+        const { name, email, password, username } = req.body;
+        const userAlreadyExists = await User.findOne({ email });
         if (userAlreadyExists) {
             return res.status(409).json({
                 success: false,
-                message: "User Already Exists With the Email!",
+                message: "User Already Exists!",
             });
         }
 
-        const usernameAlreadyExists = await User.findOne({
-            username: body.username,
-        });
+        const usernameAlreadyExists = await User.findOne({ username });
         if (usernameAlreadyExists) {
             return res.status(409).json({
                 success: false,
                 message: "Username Already Exists",
             });
         }
-        const newUser = new User(body);
+
+        const newUser = new User({
+            name,
+            email,
+            password,
+            username,
+        });
 
         // encrypt password
         const salt = await bcrypt.genSalt(10);
@@ -33,10 +34,20 @@ const getUserSignup = async (req, res) => {
         newUser.password = hashPassword;
 
         const createdUser = await newUser.save();
+        // After user creation send token and other details so that user can be logged in on front end.
 
-        res.status(500).json({
+        const token = jwt.sign(
+            { userId: createdUser._id },
+            process.env.SECRET,
+            { expiresIn: "2 days" }
+        );
+        return res.status(200).json({
             success: true,
-            user: createdUser,
+            id: createdUser.id,
+            email: createdUser.email,
+            username: createdUser.username,
+            name: createdUser.name,
+            token,
         });
     } catch (err) {
         res.status(400).json({
@@ -49,13 +60,13 @@ const getUserSignup = async (req, res) => {
 
 const getUserLoggedIn = async (req, res) => {
     try {
-        const body = req.body;
+        const { email, password } = req.body;
 
-        const foundUser = await User.findOne({ email: body.email });
+        const foundUser = await User.findOne({ email });
         if (foundUser) {
-            console.log(foundUser.password, body.password);
+            console.log(foundUser.password, password);
             const passwordMatched = await bcrypt.compare(
-                body.password,
+                password,
                 foundUser.password
             );
             if (passwordMatched) {
@@ -67,9 +78,10 @@ const getUserLoggedIn = async (req, res) => {
                 return res.status(200).json({
                     success: true,
                     id: foundUser.id,
-                    name: foundUser.name,
                     email: foundUser.email,
-                    token: token,
+                    username: foundUser.username,
+                    name: foundUser.name,
+                    token,
                 });
             }
             return res.status(200).json({
@@ -90,11 +102,13 @@ const getUserLoggedIn = async (req, res) => {
     }
 };
 
+// ! NEED TO WORK HERE!
 const getUserProfile = async (req, res) => {
     try {
         const body = req.body;
 
         const foundUser = await User.find({ _id: body.userId });
+        // ! Populate Post Here
         if (foundUser) {
             return res.status(200).json({
                 success: true,
