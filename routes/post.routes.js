@@ -5,7 +5,6 @@ const authenticate = require("../middleware/authenticate");
 const { newPost, getPost} = require("../controllers/post.controllers");
 
 router.use(authenticate);
-router.get("/", getPost);
-router.post("/", newPost);
+router.post("/new", newPost);
 
 module.exports = router;

@@ -14,11 +14,13 @@ const PostSchema = new Schema({
         type: Number,
         default: 0,
     },
-    comment: {
-        type: Schema.Types.ObjectId,
-        ref: "Comment",
-        default: [],
-    },
+    comment: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Comment",
+            default: [],
+        },
+    ],
     time: {
         type: Date,
         default: Date.now,
@@ -27,4 +29,4 @@ const PostSchema = new Schema({
 
 const Post = mongoose.model("Post", PostSchema);
 
-module.export = Post;
+module.exports = Post;

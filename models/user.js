@@ -22,10 +22,8 @@ const UserSchema = new Schema({
     },
     post: [
         {
-            post: {
-                type: Schema.Types.ObjectId,
-                ref: "Post",
-            },
+            type: Schema.Types.ObjectId,
+            ref: "Post",
         },
     ],
     profilePhoto: {
@@ -42,18 +40,14 @@ const UserSchema = new Schema({
     },
     followers: [
         {
-            followers: {
-                type: Schema.Types.ObjectId,
-                ref: "User",
-            },
+            type: Schema.Types.ObjectId,
+            ref: "User",
         },
     ],
     following: [
         {
-            following: {
-                type: Schema.Types.ObjectId,
-                ref: "User",
-            },
+            type: Schema.Types.ObjectId,
+            ref: "User",
         },
     ],
 });

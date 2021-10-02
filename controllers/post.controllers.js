@@ -1,23 +1,28 @@
 const Post = require("../models/post");
 const User = require("../models/user");
 
-// ! Here we are find user/post again and again so it would be nice we add router.param to handle for us.
 const newPost = async (req, res) => {
+    console.log("got the new post request!");
     try {
-        const body = req.body;
+        const { caption, photo } = req.body;
         const userId = req.userId;
-        const user = await User.findById(userId);
+        console.log(userId);
+        const user = req.user;
         if (user) {
             const post = new Post({
                 user: userId,
-                caption: body.caption,
-                photo: body.photo || null,
+                caption,
+                photo: photo || null,
             });
             const newPost = await post.save();
-            const updateUser = user.post.push(newPost);
-            await updateUser.save();
+            user.post.push(newPost._id);
+            const updatedUser = await user.save();
+            const populatedUser = await updatedUser.populate("post");
+            return res.status(201).json({
+                success: true,
+                user: populatedUser,
+            });
         }
-        return res.status(201).json({ success: true });
     } catch (err) {
         res.status(400).json({
             success: false,
@@ -96,4 +101,4 @@ const deletePost = async (req, res) => {
 
 // editPost
 
-module.exports = { newPost, getPost };
+module.exports = { newPost };
