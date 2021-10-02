@@ -1,5 +1,6 @@
 const express = require("express");
 const env = require("dotenv");
+var cors = require("cors");
 
 const connect = require("./db/connect");
 const userRouter = require("./routes/user.routes");
@@ -8,8 +9,9 @@ const postRouter = require("./routes/post.routes");
 // configure
 const app = express();
 env.config();
-connect();
 app.use(express.json());
+app.use(cors());
+connect();
 
 app.get("/", (req, res) => {
     res.send("Welcome to Parco Backend ");

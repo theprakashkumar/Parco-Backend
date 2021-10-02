@@ -2,11 +2,9 @@ const Post = require("../models/post");
 const User = require("../models/user");
 
 const newPost = async (req, res) => {
-    console.log("got the new post request!");
     try {
         const { caption, photo } = req.body;
         const userId = req.userId;
-        console.log(userId);
         const user = req.user;
         if (user) {
             const post = new Post({
@@ -34,12 +32,17 @@ const newPost = async (req, res) => {
 
 const getPostById = async (req, res) => {
     try {
-        const body = req.body;
-        const post = await Post.findById(body.id);
-        if (user) {
-            return res.send(200).json({
+        const { postId } = req.body;
+        const post = await Post.findById(postId);
+        if (post) {
+            // change to only what we need to populate
+            const populatedPost = await post.populate({
+                path: "user",
+                select: "_id, name",
+            });
+            return res.status(200).json({
                 success: true,
-                post: post,
+                post: populatedPost,
             });
         }
         return res.status(401).json({
@@ -60,7 +63,7 @@ const getPostByUser = async (req, res) => {
         const body = req.body;
         const user = await User.findById(body.id);
         if (user) {
-            return res.send(200).json({
+            return res.status(200).json({
                 success: true,
                 post: user.post,
             });
@@ -101,4 +104,4 @@ const deletePost = async (req, res) => {
 
 // editPost
 
-module.exports = { newPost };
+module.exports = { newPost, getPostById };
