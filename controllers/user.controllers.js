@@ -102,17 +102,16 @@ const getUserLoggedIn = async (req, res) => {
     }
 };
 
-// ! NEED TO WORK HERE!
 const getUserProfile = async (req, res) => {
     try {
-        const body = req.body;
+        const { userId } = req.body;
 
-        const foundUser = await User.find({ _id: body.userId });
-        // ! Populate Post Here
+        const foundUser = await User.findById(userId);
         if (foundUser) {
+            const populatedUser = await foundUser.populate("post");
             return res.status(200).json({
                 success: true,
-                foundUser,
+                user: populatedUser,
             });
         }
         return res.status(404).json({

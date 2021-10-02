@@ -58,29 +58,6 @@ const getPostById = async (req, res) => {
     }
 };
 
-const getPostByUser = async (req, res) => {
-    try {
-        const body = req.body;
-        const user = await User.findById(body.id);
-        if (user) {
-            return res.status(200).json({
-                success: true,
-                post: user.post,
-            });
-        }
-        return res.status(401).json({
-            success: false,
-            message: "User Not Found!",
-        });
-    } catch (err) {
-        res.status(400).json({
-            success: false,
-            message: "Can't Get the Post!",
-            errorMessage: err.message,
-        });
-    }
-};
-
 const deletePost = async (req, res) => {
     try {
         const body = req.body;
