@@ -60,15 +60,23 @@ const getPostById = async (req, res) => {
 
 const deletePost = async (req, res) => {
     try {
-        const body = req.body;
-        const user = await User.findById(body.id);
+        const user = req.user;
+        const postId = req.params.id;
+        const isUserPost = user.post.includes(postId);
+        if (isUserPost) {
+            const deletedPost = await Post.findByIdAndRemove(postId);
+            user.post.splice(user.post.indexOf(postId), 1);
+            const updatedUser = await user.save();
+            return res.status(200).json({
+                success: true,
+                deletedPost,
+                updatedUser,
+            });
+        }
 
-        user.post = user.post.filter((post) => post._id !== body.post.id);
-
-        const updatedUser = await user.save();
-
-        res.status(200).json({
-            success: true,
+        return res.status(401).json({
+            success: false,
+            message: "You are not Authorize!",
         });
     } catch (err) {
         res.status(400).json({
@@ -81,4 +89,4 @@ const deletePost = async (req, res) => {
 
 // editPost
 
-module.exports = { newPost, getPostById };
+module.exports = { newPost, getPostById, deletePost };
