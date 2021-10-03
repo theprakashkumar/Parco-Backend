@@ -87,6 +87,33 @@ const deletePost = async (req, res) => {
     }
 };
 
-// editPost
+const editPost = async (req, res) => {
+    try {
+        const user = req.user;
+        const body = req.body;
+        const postId = req.params.id;
+        const isUserPost = user.post.includes(postId);
 
-module.exports = { newPost, getPostById, deletePost };
+        if (isUserPost) {
+            const post = await Post.findById(postId);
+            post.caption = body.caption;
+            const updatedPost = await post.save();
+            return res.status(200).json({
+                success: true,
+                updatedPost,
+            });
+        }
+        return res.status(401).json({
+            success: false,
+            message: "You are not Authorize!",
+        });
+    } catch (err) {
+        res.status(400).json({
+            success: false,
+            message: "Couldn't Delete the Post!",
+            errorMessage: err.message,
+        });
+    }
+};
+
+module.exports = { newPost, getPostById, deletePost, editPost };
