@@ -7,18 +7,18 @@ const CommentSchema = new Schema({
         ref: "User",
     },
     time: {
-        type: Data,
-        default: Data.now,
+        type: Date,
+        default: Date.now,
     },
     content: {
         type: String,
         require: "You Must Enter Some Text!",
     },
-    postId: {
-        type: Schema.Types.ObjectId;
+    post: {
+        type: Schema.Types.ObjectId,
         ref: "Post",
     },
 });
 
 const Comment = mongoose.model("Comment", CommentSchema);
-module.export = Comment;
+module.exports = Comment;

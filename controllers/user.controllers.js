@@ -128,4 +128,7 @@ const getUserProfile = async (req, res) => {
     }
 };
 
+// follow
+// un follow
+
 module.exports = { getUserSignup, getUserLoggedIn, getUserProfile };
