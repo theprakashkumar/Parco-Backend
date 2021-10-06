@@ -1,5 +1,8 @@
 const express = require("express");
-const { addComment } = require("../controllers/comment.controllers");
+const {
+    addComment,
+    deleteComment,
+} = require("../controllers/comment.controllers");
 const authenticate = require("../middleware/authenticate");
 const router = express.Router();
 
@@ -8,5 +11,6 @@ const router = express.Router();
 router.use(authenticate);
 // comment
 router.post("/comment/:postId", addComment);
+router.delete("/comment/:postId/:commentId", deleteComment);
 
 module.exports = router;
