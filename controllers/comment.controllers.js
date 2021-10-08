@@ -62,10 +62,9 @@ const deleteComment = async (req, res) => {
             message: "You are not Authorize!",
         });
     } catch (error) {
-        console.log(error);
         return res.status(400).json({
             status: false,
-            message: "Can't Create the Comment!",
+            message: "Can't Delete the Comment!",
             errorMessage: error.message,
         });
     }
