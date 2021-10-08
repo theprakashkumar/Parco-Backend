@@ -3,7 +3,7 @@ const {
     addComment,
     deleteComment,
 } = require("../controllers/comment.controllers");
-const { likePost } = require("../controllers/like.controllers");
+const { likePost, removeLike } = require("../controllers/like.controllers");
 const authenticate = require("../middleware/authenticate");
 const router = express.Router();
 
@@ -11,6 +11,7 @@ const router = express.Router();
 router.use(authenticate);
 // like & remove like
 router.put("/like/:postId", likePost);
+router.delete("/like/:postId", removeLike);
 
 // comment
 router.post("/comment/:postId", addComment);
