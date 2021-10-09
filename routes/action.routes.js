@@ -3,12 +3,16 @@ const {
     addComment,
     deleteComment,
 } = require("../controllers/comment.controllers");
+const { follow, unfollow } = require("../controllers/follow.controllers");
 const { likePost, removeLike } = require("../controllers/like.controllers");
 const authenticate = require("../middleware/authenticate");
 const router = express.Router();
 
-// follow & un-follow
 router.use(authenticate);
+// follow & un-follow
+router.put("/follow/:followUserId", follow);
+router.delete("/unfollow/:unFollowUserId", unfollow);
+
 // like & remove like
 router.put("/like/:postId", likePost);
 router.delete("/like/:postId", removeLike);
