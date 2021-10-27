@@ -39,7 +39,7 @@ const getUserSignup = async (req, res) => {
         const token = jwt.sign(
             { userId: createdUser._id },
             process.env.SECRET,
-            { expiresIn: "2 days" }
+            { expiresIn: "30 days" }
         );
         return res.status(200).json({
             success: true,
@@ -104,7 +104,7 @@ const getUserLoggedIn = async (req, res) => {
 
 const getUserProfile = async (req, res) => {
     try {
-        const { userId } = req.body;
+        const { id: userId } = req.params;
 
         const foundUser = await User.findById(userId);
         if (foundUser) {
@@ -117,7 +117,6 @@ const getUserProfile = async (req, res) => {
         return res.status(404).json({
             success: false,
             message: "User Not Found!",
-            errorMessage: err.message,
         });
     } catch (err) {
         return res.status(400).json({
@@ -128,7 +127,28 @@ const getUserProfile = async (req, res) => {
     }
 };
 
-// follow
-// un follow
+const getAllUser = async (req, res) => {
+    try {
+        const user = await User.find({});
+        if (user) {
+            return res.status(200).json({
+                success: true,
+                user,
+            });
+        }
+        return res.status(404).json({
+            status: false,
+            message: "User Not Found!",
+        });
+    } catch (err) {
+        return res.status(400).json({
+            status: false,
+            message: "Can't Get All Users!",
+            errorMessage: err.message,
+        });
+    }
+};
 
-module.exports = { getUserSignup, getUserLoggedIn, getUserProfile };
+// update user
+
+module.exports = { getUserSignup, getUserLoggedIn, getUserProfile, getAllUser };
