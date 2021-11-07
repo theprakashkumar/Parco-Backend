@@ -1,6 +1,6 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
-var jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 
 const getUserSignup = async (req, res) => {
     try {
@@ -44,9 +44,7 @@ const getUserSignup = async (req, res) => {
         return res.status(200).json({
             success: true,
             id: createdUser.id,
-            email: createdUser.email,
-            username: createdUser.username,
-            name: createdUser.name,
+            user: createdUser,
             token,
         });
     } catch (err) {
@@ -73,14 +71,13 @@ const getUserLoggedIn = async (req, res) => {
                 const token = jwt.sign(
                     { userId: foundUser._id },
                     process.env.SECRET,
-                    { expiresIn: "2 days" }
+                    { expiresIn: "30 days" }
                 );
+                console.log(foundUser);
                 return res.status(200).json({
                     success: true,
                     id: foundUser.id,
-                    email: foundUser.email,
-                    username: foundUser.username,
-                    name: foundUser.name,
+                    user: foundUser,
                     token,
                 });
             }
@@ -120,7 +117,7 @@ const getUserProfile = async (req, res) => {
         });
     } catch (err) {
         return res.status(400).json({
-            status: false,
+            success: false,
             message: "Can't Get the User!",
             errorMessage: err.message,
         });
@@ -137,18 +134,61 @@ const getAllUser = async (req, res) => {
             });
         }
         return res.status(404).json({
-            status: false,
+            success: false,
             message: "User Not Found!",
         });
     } catch (err) {
         return res.status(400).json({
-            status: false,
+            success: false,
             message: "Can't Get All Users!",
             errorMessage: err.message,
         });
     }
 };
 
-// update user
+const getUserUpdated = async (req, res) => {
+    try {
+        const loggedInUserId = req.userId;
+        const { id: userId } = req.params;
+        const user = await User.findById(userId);
+        // const body = req.body;
+        const updates = Object.entries(req.body);
+        console.log(updates);
 
-module.exports = { getUserSignup, getUserLoggedIn, getUserProfile, getAllUser };
+        if (loggedInUserId === userId) {
+            if (user) {
+                for (let update of updates) {
+                    console.log(update);
+                    user[update[0]] = update[1];
+                }
+                console.log(user);
+                const updatedUser = await user.save();
+                return res.status(200).json({
+                    success: true,
+                    user: updatedUser,
+                });
+            }
+            return res.status(404).json({
+                success: false,
+                message: "User Not Found!",
+            });
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(400).json({
+            success: false,
+            message: "Can't Update User!",
+            errorMessage: err.message,
+        });
+    }
+};
+
+// change password
+
+module.exports = {
+    getUserSignup,
+    getUserLoggedIn,
+    getUserProfile,
+    getAllUser,
+    getUserUpdated,
+};

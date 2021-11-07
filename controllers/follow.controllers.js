@@ -16,6 +16,7 @@ const follow = async (req, res) => {
             return res.status(200).json({
                 success: true,
                 user: populatedUser,
+                followedId: followUserId,
             });
         }
         return res.status(401).json({
@@ -23,6 +24,7 @@ const follow = async (req, res) => {
             message: "User not Found!",
         });
     } catch (error) {
+        console.log(error);
         return res.status(400).json({
             status: false,
             message: "Can't Follow the User!",
@@ -50,6 +52,7 @@ const unfollow = async (req, res) => {
             return res.status(200).json({
                 success: true,
                 user: populatedUser,
+                unFollowedId: unFollowUserId,
             });
         }
         return res.status(401).json({
@@ -57,6 +60,7 @@ const unfollow = async (req, res) => {
             message: "User not Found!",
         });
     } catch (error) {
+        console.log(error);
         return res.status(400).json({
             status: false,
             message: "Can't Unfollow the User!",

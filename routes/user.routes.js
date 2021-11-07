@@ -7,6 +7,7 @@ const {
     getUserLoggedIn,
     getUserProfile,
     getAllUser,
+    getUserUpdated,
 } = require("../controllers/user.controllers");
 
 router.post("/signup", getUserSignup);
@@ -14,7 +15,8 @@ router.post("/login", getUserLoggedIn);
 
 router.use(authenticate);
 router.get("/all", getAllUser);
-router.get("/:id", getUserProfile, () => console.log('j'));
+router.get("/:id", getUserProfile);
+router.put("/update/:id/", getUserUpdated);
 
 //route to update user details
 
