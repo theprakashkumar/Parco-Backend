@@ -185,10 +185,35 @@ const getUserUpdated = async (req, res) => {
 
 // change password
 
+const initializeUser = async (req, res) => {
+    try {
+        const loggedInUserId = req.userId;
+        const userId = req.params.id;
+        if (loggedInUserId === userId) {
+            return res.status(200).json({
+                success: true,
+                user: req.user,
+            });
+        }
+        return res.status(201).json({
+            success: false,
+            message: "You are not authorize",
+        });
+    } catch (err) {
+        console.log(err);
+        return res.status(400).json({
+            success: false,
+            message: "Can't Initialize the User!",
+            errorMessage: err.message,
+        });
+    }
+};
+
 module.exports = {
     getUserSignup,
     getUserLoggedIn,
     getUserProfile,
     getAllUser,
     getUserUpdated,
+    initializeUser,
 };
