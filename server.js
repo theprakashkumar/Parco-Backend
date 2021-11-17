@@ -6,6 +6,7 @@ const connect = require("./db/connect");
 const userRouter = require("./routes/user.routes");
 const postRouter = require("./routes/post.routes");
 const actionRouter = require("./routes/action.routes");
+const feedRouter = require("./routes/feed.routes");
 
 // configure
 const app = express();
@@ -22,6 +23,7 @@ app.get("/", (req, res) => {
 app.use("/user", userRouter);
 app.use("/post", postRouter);
 app.use("/action", actionRouter);
+app.use("/feed", feedRouter);
 
 app.listen(process.env.PORT || 5050, () => {
     console.log("Server Has Started ");
