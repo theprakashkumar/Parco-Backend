@@ -17,9 +17,11 @@ const addComment = async (req, res) => {
             const post = await Post.findById(postId);
             post.comment.push(comment._id);
             const updatedPost = await post.save();
+            const populatedPost = await updatedPost.populate("comment");
             return res.status(200).json({
                 success: true,
-                updatedPost,
+                postId: populatedPost._id,
+                comment: populatedPost.comment,
             });
         }
         return res.status(401).json({
@@ -27,6 +29,7 @@ const addComment = async (req, res) => {
             message: "You are not Authorize!",
         });
     } catch (error) {
+        console.log(error);
         return res.status(400).json({
             status: false,
             message: "Can't Create the Comment!",
@@ -62,6 +65,7 @@ const deleteComment = async (req, res) => {
             message: "You are not Authorize!",
         });
     } catch (error) {
+        console.log(error);
         return res.status(400).json({
             status: false,
             message: "Can't Delete the Comment!",

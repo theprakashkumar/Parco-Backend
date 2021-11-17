@@ -18,7 +18,7 @@ router.put("/like/:postId", likePost);
 router.delete("/like/:postId", removeLike);
 
 // comment
-router.post("/comment/:postId", addComment);
+router.put("/comment/:postId", addComment);
 router.delete("/comment/:postId/:commentId", deleteComment);
 
 module.exports = router;
