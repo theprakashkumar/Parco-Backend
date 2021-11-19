@@ -4,10 +4,16 @@ const Post = require("../models/post");
 const feed = async (req, res) => {
     try {
         const user = req.user;
-        const userPost = await Post.find({ user: user._id }).populate("user");
+        const userPost = await Post.find({ user: user._id })
+            .populate("user")
+            .populate("comment")
+            .exec();
         const followingUserPost = await Post.find({
             user: { $in: user.following },
-        }).populate("user");
+        })
+            .populate("user")
+            .populate("comment")
+            .exec();
         let feed = [...userPost, ...followingUserPost];
         feed = feed.sort((postOne, postTwo) => postTwo - postOne);
         return res.status(200).json({
