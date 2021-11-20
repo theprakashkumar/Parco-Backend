@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Post = require("../models/post");
 
 const getUserSignup = async (req, res) => {
     try {
@@ -106,9 +107,11 @@ const getUserProfile = async (req, res) => {
         const foundUser = await User.findById(userId);
         if (foundUser) {
             const populatedUser = await foundUser.populate("post");
+            const post = await Post.find({ user: userId }).populate("comment");
             return res.status(200).json({
                 success: true,
                 user: populatedUser,
+                post,
             });
         }
         return res.status(404).json({
@@ -116,6 +119,7 @@ const getUserProfile = async (req, res) => {
             message: "User Not Found!",
         });
     } catch (err) {
+        console.log(err);
         return res.status(400).json({
             success: false,
             message: "Can't Get the User!",
