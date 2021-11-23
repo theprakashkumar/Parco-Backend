@@ -6,7 +6,6 @@ const getNotification = async (req, res) => {
             targetUser: userId,
         }).populate({ path: "sourceUser", select: "name" });
         if (notification) {
-            console.log(notification);
             return res.status(200).json({
                 success: true,
                 notification,

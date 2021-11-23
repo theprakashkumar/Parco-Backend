@@ -32,14 +32,11 @@ const newPost = async (req, res) => {
 
 const getPostById = async (req, res) => {
     try {
-        const { postId } = req.body;
+        const { id: postId } = req.params;
         const post = await Post.findById(postId);
         if (post) {
             // change to only what we need to populate
-            const populatedPost = await post.populate({
-                path: "user",
-                select: "_id, name",
-            });
+            const populatedPost = await post.populate("user");
             return res.status(200).json({
                 success: true,
                 post: populatedPost,
