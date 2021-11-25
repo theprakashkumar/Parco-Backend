@@ -15,7 +15,7 @@ const feed = async (req, res) => {
             .populate("comment")
             .exec();
         let feed = [...userPost, ...followingUserPost];
-        feed = feed.sort((postOne, postTwo) => postTwo - postOne);
+        feed = feed.sort((postOne, postTwo) => postTwo.time - postOne.time);
         return res.status(200).json({
             success: true,
             feed,
