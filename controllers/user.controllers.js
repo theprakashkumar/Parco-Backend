@@ -108,10 +108,13 @@ const getUserProfile = async (req, res) => {
         if (foundUser) {
             const populatedUser = await foundUser.populate("post");
             const post = await Post.find({ user: userId }).populate("comment");
+            const sortedPost = post.sort((postOne, postTwo) => {
+                return postTwo.time - postOne.time;
+            });
             return res.status(200).json({
                 success: true,
                 user: populatedUser,
-                post,
+                post: sortedPost,
             });
         }
         return res.status(404).json({
