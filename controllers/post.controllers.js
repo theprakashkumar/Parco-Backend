@@ -33,13 +33,14 @@ const newPost = async (req, res) => {
 const getPostById = async (req, res) => {
     try {
         const { id: postId } = req.params;
-        const post = await Post.findById(postId);
+        const post = await Post.findById(postId)
+            .populate("user")
+            .populate("comment")
+            .exec();
         if (post) {
-            // change to only what we need to populate
-            const populatedPost = await post.populate("user");
             return res.status(200).json({
                 success: true,
-                post: populatedPost,
+                post,
             });
         }
         return res.status(401).json({
@@ -47,6 +48,7 @@ const getPostById = async (req, res) => {
             message: "Post Not Found!",
         });
     } catch (err) {
+        console.log(err);
         res.status(400).json({
             success: false,
             message: "Can't Get the Post!",
