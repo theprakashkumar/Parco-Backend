@@ -25,7 +25,7 @@ const follow = async (req, res) => {
             followUser.followers.push(user._id);
             const updatedUser = await user.save();
             const updatedFollowUser = await followUser.save();
-            createFollowNotification(user, followUserId);
+            createFollowNotification(followUserId, user);
             const populatedUser = await updatedUser.populate("following");
 
             return res.status(200).json({

@@ -1,4 +1,5 @@
 const Notification = require("../models/notification");
+
 const getNotification = async (req, res) => {
     try {
         const userId = req.userId;
@@ -6,6 +7,9 @@ const getNotification = async (req, res) => {
             targetUser: userId,
         }).populate({ path: "sourceUser", select: "name" });
         if (notification) {
+            const sortedNotification = notification.sort((a, b) => {
+                return b.time - a.time;
+            })
             return res.status(200).json({
                 success: true,
                 notification,
