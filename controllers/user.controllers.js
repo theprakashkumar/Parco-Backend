@@ -107,7 +107,11 @@ const getUserProfile = async (req, res) => {
         const foundUser = await User.findById(userId);
         if (foundUser) {
             const populatedUser = await foundUser.populate("post");
-            const post = await Post.find({ user: userId }).populate("comment");
+            const post = await Post.find({ user: userId })
+                .populate({
+                    path: "comment",
+                    populate: { path: "user", select: "name username" }
+                });
             const sortedPost = post.sort((postOne, postTwo) => {
                 return postTwo.time - postOne.time;
             });

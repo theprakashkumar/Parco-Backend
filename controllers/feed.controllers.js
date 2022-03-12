@@ -12,7 +12,7 @@ const feed = async (req, res) => {
             user: { $in: user.following },
         })
             .populate("user")
-            .populate("comment")
+            .populate({ path: "comment", populate: { path: "user", select: "name username" } })
             .exec();
         let feed = [...userPost, ...followingUserPost];
         feed = feed.sort((postOne, postTwo) => postTwo.time - postOne.time);
