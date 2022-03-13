@@ -3,18 +3,20 @@ const Comment = require("../models/comment");
 const Notification = require("../models/notification");
 
 const createCommentNotification = async (post, source) => {
+    if (post.user._id.toString() !== source) {
+        try {
+            const newNotification = new Notification({
+                notificationType: "COMMENT",
+                post: post._id,
+                sourceUser: source,
+                targetUser: post.user,
+            });
+            await newNotification.save();
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
-    try {
-        const newNotification = new Notification({
-            notificationType: "COMMENT",
-            post: post._id,
-            sourceUser: source,
-            targetUser: post.user,
-        });
-        await newNotification.save();
-    } catch (error) {
-        console.log(error);
-    }
 };
 
 const addComment = async (req, res) => {
@@ -36,12 +38,8 @@ const addComment = async (req, res) => {
             const populatedPost = await updatedPost
                 .populate({
                     path: "comment",
-                    populate: {
-                        path: "user",
-                        select: "name username"
-                    }
-                })
-                .exec();
+                    populate: { path: "user", select: "username" }
+                });
             return res.status(200).json({
                 success: true,
                 postId: populatedPost._id,

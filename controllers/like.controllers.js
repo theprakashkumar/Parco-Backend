@@ -2,16 +2,18 @@ const Post = require("../models/post");
 const Notification = require("../models/notification");
 
 const createLikeNotification = async (post, source) => {
-    try {
-        const newNotification = new Notification({
-            notificationType: "LIKE",
-            post: post._id,
-            sourceUser: source,
-            targetUser: post.user,
-        });
-        await newNotification.save();
-    } catch (error) {
-        console.log(error);
+    if (post.user._id.toString() !== source) {
+        try {
+            const newNotification = new Notification({
+                notificationType: "LIKE",
+                post: post._id,
+                sourceUser: source,
+                targetUser: post.user,
+            });
+            await newNotification.save();
+        } catch (error) {
+            console.log(error);
+        }
     }
 };
 

@@ -6,13 +6,19 @@ const feed = async (req, res) => {
         const user = req.user;
         const userPost = await Post.find({ user: user._id })
             .populate("user")
-            .populate("comment")
+            .populate({
+                path: "comment",
+                populate: { path: "user", select: "name username" }
+            })
             .exec();
         const followingUserPost = await Post.find({
             user: { $in: user.following },
         })
             .populate("user")
-            .populate({ path: "comment", populate: { path: "user", select: "name username" } })
+            .populate({
+                path: "comment",
+                populate: { path: "user", select: "name username" }
+            })
             .exec();
         let feed = [...userPost, ...followingUserPost];
         feed = feed.sort((postOne, postTwo) => postTwo.time - postOne.time);
