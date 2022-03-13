@@ -3,6 +3,7 @@ const Comment = require("../models/comment");
 const Notification = require("../models/notification");
 
 const createCommentNotification = async (post, source) => {
+
     try {
         const newNotification = new Notification({
             notificationType: "COMMENT",
@@ -32,7 +33,15 @@ const addComment = async (req, res) => {
             post.comment.push(comment._id);
             const updatedPost = await post.save();
             createCommentNotification(updatedPost, userId);
-            const populatedPost = await updatedPost.populate("comment");
+            const populatedPost = await updatedPost
+                .populate({
+                    path: "comment",
+                    populate: {
+                        path: "user",
+                        select: "name username"
+                    }
+                })
+                .exec();
             return res.status(200).json({
                 success: true,
                 postId: populatedPost._id,
