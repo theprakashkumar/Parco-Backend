@@ -82,7 +82,7 @@ const getUserLoggedIn = async (req, res) => {
                     token,
                 });
             }
-            return res.status(200).json({
+            return res.status(401).json({
                 success: false,
                 message: "Wrong Password!",
             });
