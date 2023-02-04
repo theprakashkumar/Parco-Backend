@@ -2,24 +2,24 @@ const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Post = require("../models/post");
-const { urlencoded } = require("express");
 
 const getUserSignup = async (req, res) => {
     try {
         const { name, email, password, username } = req.body;
-        const userAlreadyExists = await User.findOne({ email });
-        if (userAlreadyExists) {
-            return res.status(409).json({
-                success: false,
-                message: "Email Already Exists!",
-            });
-        }
 
         const usernameAlreadyExists = await User.findOne({ username });
         if (usernameAlreadyExists) {
             return res.status(409).json({
                 success: false,
                 message: "Username Already Exists",
+            });
+        }
+
+        const userAlreadyExists = await User.findOne({ email });
+        if (userAlreadyExists) {
+            return res.status(409).json({
+                success: false,
+                message: "Email Already Exists!",
             });
         }
 
