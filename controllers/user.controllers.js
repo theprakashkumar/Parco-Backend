@@ -2,6 +2,7 @@ const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Post = require("../models/post");
+const { urlencoded } = require("express");
 
 const getUserSignup = async (req, res) => {
     try {
@@ -107,11 +108,10 @@ const getUserProfile = async (req, res) => {
         const foundUser = await User.findById(userId);
         if (foundUser) {
             const populatedUser = await foundUser.populate("post");
-            const post = await Post.find({ user: userId })
-                .populate({
-                    path: "comment",
-                    populate: { path: "user", select: "name username" }
-                });
+            const post = await Post.find({ user: userId }).populate({
+                path: "comment",
+                populate: { path: "user", select: "name username" },
+            });
             const sortedPost = post.sort((postOne, postTwo) => {
                 return postTwo.time - postOne.time;
             });
@@ -162,27 +162,46 @@ const getUserUpdated = async (req, res) => {
         const loggedInUserId = req.userId;
         const { id: userId } = req.params;
         const user = await User.findById(userId);
-        // const body = req.body;
         const updates = Object.entries(req.body);
-        console.log(updates);
 
         if (loggedInUserId === userId) {
-            if (user) {
+            // before updating the user first check if they also want to change the username because if they request for username change then we have to check if username exist or not?
+            if (req.body.username === user.username) {
                 for (let update of updates) {
                     console.log(update);
                     user[update[0]] = update[1];
                 }
-                console.log(user);
                 const updatedUser = await user.save();
                 return res.status(200).json({
                     success: true,
                     user: updatedUser,
                 });
+            } else {
+                console.log("else ran");
+                // run when user want to change the username because in that case we have check if username available or not
+                const usernameAlreadyExists = await User.findOne({
+                    username: req.body.username,
+                });
+                console.log(usernameAlreadyExists);
+                if (!usernameAlreadyExists) {
+                    console.log("no username found");
+                    for (let update of updates) {
+                        console.log(update);
+                        user[update[0]] = update[1];
+                    }
+                    const updatedUser = await user.save();
+                    return res.status(200).json({
+                        success: true,
+                        user: updatedUser,
+                    });
+                } else {
+                    console.log("username found");
+                    return res.status(409).json({
+                        success: false,
+                        message: "Username Already Exists",
+                    });
+                }
             }
-            return res.status(404).json({
-                success: false,
-                message: "User Not Found!",
-            });
         }
     } catch (err) {
         console.log(err);
