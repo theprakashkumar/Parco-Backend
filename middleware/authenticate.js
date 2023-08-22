@@ -11,7 +11,6 @@ const authenticate = async (req, res, next) => {
         message: "You are not authorize please login first!",
       });
     }
-    console.log({ token });
 
     const decoded = jwt.verify(token, process.env.SECRET);
     // if password is valid put the userId in req
@@ -23,7 +22,7 @@ const authenticate = async (req, res, next) => {
     }
     // if password is not valid
   } catch (error) {
-    console.log({ error });
+    console.log(error);
     return res.status(401).json({
       success: false,
       message: "You are not authorize please login first!",

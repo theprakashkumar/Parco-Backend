@@ -70,7 +70,6 @@ const getUserLoggedIn = async (req, res) => {
         const token = jwt.sign({ userId: foundUser._id }, process.env.SECRET, {
           expiresIn: "30 days",
         });
-        console.log("Logged In Successfully!");
         return res.status(200).json({
           success: true,
           id: foundUser.id,
@@ -120,12 +119,12 @@ const getUserProfile = async (req, res) => {
       success: false,
       message: "User Not Found!",
     });
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.log(error);
     return res.status(400).json({
       success: false,
       message: "Can't Get the User!",
-      errorMessage: err.message,
+      errorMessage: error.message,
     });
   }
 };
@@ -163,7 +162,6 @@ const getUserUpdated = async (req, res) => {
       // before updating the user first check if they also want to change the username because if they request for username change then we have to check if username exist or not?
       if (req.body.username === user.username) {
         for (let update of updates) {
-          console.log(update);
           user[update[0]] = update[1];
         }
         const updatedUser = await user.save();
@@ -172,16 +170,12 @@ const getUserUpdated = async (req, res) => {
           user: updatedUser,
         });
       } else {
-        console.log("else ran");
         // run when user want to change the username because in that case we have check if username available or not
         const usernameAlreadyExists = await User.findOne({
           username: req.body.username,
         });
-        console.log(usernameAlreadyExists);
         if (!usernameAlreadyExists) {
-          console.log("no username found");
           for (let update of updates) {
-            console.log(update);
             user[update[0]] = update[1];
           }
           const updatedUser = await user.save();
@@ -190,7 +184,6 @@ const getUserUpdated = async (req, res) => {
             user: updatedUser,
           });
         } else {
-          console.log("username found");
           return res.status(409).json({
             success: false,
             message: "Username Already Exists",
@@ -198,12 +191,12 @@ const getUserUpdated = async (req, res) => {
         }
       }
     }
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.log(error);
     return res.status(400).json({
       success: false,
       message: "Can't Update User!",
-      errorMessage: err.message,
+      errorMessage: error.message,
     });
   }
 };
@@ -215,7 +208,6 @@ const initializeUser = async (req, res) => {
     const loggedInUserId = req.userId;
     const userId = req.params.id;
     if (loggedInUserId === userId) {
-      console.log("User Initialized!");
       return res.status(200).json({
         success: true,
         user: req.user,
@@ -225,12 +217,12 @@ const initializeUser = async (req, res) => {
       success: false,
       message: "You are not authorize",
     });
-  } catch (err) {
-    console.log("something went wrong while ini", err);
+  } catch (error) {
+    console.log(error);
     return res.status(400).json({
       success: false,
       message: "Can't Initialize the User!",
-      errorMessage: err.message,
+      errorMessage: error.message,
     });
   }
 };

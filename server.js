@@ -17,7 +17,7 @@ app.use(cors());
 connect();
 
 app.get("/", (req, res) => {
-    res.send("Welcome to Parco Backend ");
+  res.send("Welcome to Parco Backend ");
 });
 
 // Routes
@@ -28,5 +28,5 @@ app.use("/feed", feedRouter);
 app.use("/notification", notificationRouter);
 
 app.listen(process.env.PORT || 5050, () => {
-    console.log("Server Has Started ");
+  console.log("Server Has Started 🥳");
 });
